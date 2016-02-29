@@ -48,7 +48,6 @@ it('Test de error plugin de version', { parallel: false }, (done) => {
 
         expect(err).to.exist();
         expect(err.message).to.equal('register version failed');
-
         done();
     });
 });
