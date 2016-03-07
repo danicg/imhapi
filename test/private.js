@@ -3,6 +3,7 @@
 const Code = require('code');
 const Lab = require('lab');
 const Server = require('../lib/index');
+const Manifest = require('../lib/manifest.json');
 const Basic = require('hapi-auth-basic');
 
 const lab = exports.lab = Lab.script();
@@ -10,14 +11,18 @@ const describe = lab.experiment;
 const expect = Code.expect;
 const it = lab.test;
 
-const internals = {};
-
+const internals = {
+    options: {
+        relativeTo: __dirname + '../../lib'
+    }
+};
+Manifest.connections[0].port = '0';
 
 describe('/private', () => {
 
     it('Usuario autenticado', (done) => {
 
-        Server.init(0, (err, server) => {
+        Server.init(Manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
 
@@ -32,7 +37,7 @@ describe('/private', () => {
 
     it('Usuario no existe', (done) => {
 
-        Server.init(0, (err, server) => {
+        Server.init(Manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
 
@@ -46,7 +51,7 @@ describe('/private', () => {
 
     it('Usuario existe pero password erroneo', (done) => {
 
-        Server.init(0, (err, server) => {
+        Server.init(Manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
 
@@ -71,7 +76,7 @@ describe('/private', () => {
             name: 'fake autenticacion'
         };
 
-        Server.init(0, (err, server) => {
+        Server.init(Manifest, internals.options, (err, server) => {
 
             expect(err).to.exist();
             expect(err.message).to.equal('fallo plugin autenticacion');

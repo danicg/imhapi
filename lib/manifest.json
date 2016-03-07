@@ -1,0 +1,28 @@
+{
+    "connections": [
+        {
+            "port": 8000,
+            "labels": ["web"]
+        }
+    ],
+    "registrations": [
+        {
+            "plugin": "./private",
+            "options": {
+                "select": ["web"]
+            }
+        },
+        {
+            "plugin": "./version",
+            "options": {
+                "select": ["web"]
+            }
+        },
+        {
+            "plugin": "./home",
+            "options": {
+                "select": ["web"]
+            }
+        }
+    ]
+}
