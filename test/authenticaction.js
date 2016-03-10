@@ -3,7 +3,6 @@
 const Code = require('code');
 const Lab = require('lab');
 const Server = require('../lib/index');
-const Manifest = require('../lib/manifest.json');
 const Basic = require('hapi-auth-basic');
 
 const lab = exports.lab = Lab.script();
@@ -15,7 +14,22 @@ const internals = {
         relativeTo: __dirname + '../../lib'
     }
 };
-Manifest.connections[0].port = '0';
+
+internals.manifest = {
+    connections: [
+        {
+            port: 0
+        }
+    ],
+    registrations: [
+        {
+            plugin: './authentication'
+        },
+        {
+            plugin: 'hapi-auth-basic'
+        }
+    ]
+};
 
 it('Error en el plugin de autenticacion', { parallel: false }, (done) => {
 
@@ -30,7 +44,7 @@ it('Error en el plugin de autenticacion', { parallel: false }, (done) => {
         name: 'fake autenticacion'
     };
 
-    Server.init(Manifest, internals.options, (err, server) => {
+    Server.init(internals.manifest, internals.options, (err, server) => {
 
         expect(err).to.exist();
         expect(err.message).to.equal('fallo plugin autenticacion');

@@ -3,7 +3,6 @@
 const Code = require('code');
 const Lab = require('lab');
 const Server = require('../lib/index');
-const Manifest = require('../lib/manifest.json');
 const Vision = require('vision');
 
 const lab = exports.lab = Lab.script();
@@ -16,13 +15,28 @@ const internals = {
         relativeTo: __dirname + '../../lib'
     }
 };
-Manifest.connections[0].port = '0';
+
+internals.manifest = {
+    connections: [
+        {
+            port: 0
+        }
+    ],
+    registrations: [
+        {
+            plugin: './home'
+        },
+        {
+            plugin: 'vision'
+        }
+    ]
+};
 
 describe('/home', () => {
 
     it('Devuelve un texto con la ruta de las views', (done) => {
 
-        Server.init(Manifest, internals.options, (err, server) => {
+        Server.init(internals.manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
             server.inject('/home', (res) => {
@@ -47,7 +61,7 @@ describe('/home', () => {
             name: 'fake vision'
         };
 
-        Server.init(Manifest, internals.options, (err, server) => {
+        Server.init(internals.manifest, internals.options, (err, server) => {
 
             expect(err).to.exist();
             expect(err.message).to.equal('fallo plugin vision');

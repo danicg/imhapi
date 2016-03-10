@@ -3,7 +3,6 @@
 const Code = require('code');
 const Lab = require('lab');
 const Server = require('../lib/index');
-const Manifest = require('../lib/manifest.json');
 
 const lab = exports.lab = Lab.script();
 const describe = lab.experiment;
@@ -15,13 +14,31 @@ const internals = {
         relativeTo: __dirname + '../../lib'
     }
 };
-Manifest.connections[0].port = '0';
+
+internals.manifest = {
+    connections: [
+        {
+            port: 0
+        }
+    ],
+    registrations: [
+        {
+            plugin: './authentication'
+        },
+        {
+            plugin: './private'
+        },
+        {
+            plugin: 'hapi-auth-basic'
+        }
+    ]
+};
 
 describe('/private', () => {
 
     it('Usuario autenticado', (done) => {
 
-        Server.init(Manifest, internals.options, (err, server) => {
+        Server.init(internals.manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
 
@@ -36,7 +53,7 @@ describe('/private', () => {
 
     it('Usuario no existe', (done) => {
 
-        Server.init(Manifest, internals.options, (err, server) => {
+        Server.init(internals.manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
 
@@ -50,7 +67,7 @@ describe('/private', () => {
 
     it('Usuario existe pero password erroneo', (done) => {
 
-        Server.init(Manifest, internals.options, (err, server) => {
+        Server.init(internals.manifest, internals.options, (err, server) => {
 
             expect(err).to.not.exist();
 

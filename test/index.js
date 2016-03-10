@@ -4,10 +4,11 @@ const Hapi = require('hapi');
 const Code = require('code');
 const Lab = require('lab');
 const Server = require('../lib');
-const Manifest = require('../lib/manifest.json');
 const Version = require('../lib/version');
 const Private = require('../lib/private');
 const Home = require('../lib/home');
+//const Version = require('../lib/version');
+
 
 const lab = exports.lab = Lab.script();
 const expect = Code.expect;
@@ -18,11 +19,9 @@ const internals = {
         relativeTo: __dirname + '../../lib'
     }
 };
-Manifest.connections[0].port = '0';
-
 it('Arranca servidor y devuelve el server', (done) => {
 
-    Server.init(Manifest, internals.options, (err, server) => {
+    Server.init({ connections: [{ port: 0 }] }, {}, (err, server) => {
 
         expect(err).to.not.exist();
         expect(server).to.be.instanceof(Hapi.Server);
@@ -32,9 +31,7 @@ it('Arranca servidor y devuelve el server', (done) => {
 
 it('Arranca el servidor en el puerto especificado', (done) => {
 
-    const copyManifest = JSON.parse(JSON.stringify(Manifest));
-    copyManifest.connections[0].port = '8000';
-    Server.init(copyManifest, internals.options, (err, server) => {
+    Server.init({ connections: [{ port: 8000 }] }, {}, (err, server) => {
 
         expect(err).to.not.exist();
         expect(server.info.port).to.equal(8000);
@@ -56,7 +53,7 @@ it('Test de error plugin de version', { parallel: false }, (done) => {
         name: 'fake version'
     };
 
-    Server.init(Manifest, internals.options, (err, server) => {
+    Server.init({ connections: [{ port: 0 }], registrations: [{ plugin: './version' }] }, internals.options, (err, server) => {
 
         expect(err).to.exist();
         expect(err.message).to.equal('register version failed');
@@ -78,7 +75,7 @@ it('Test de error plugin private', { parallel: false }, (done) => {
         name: 'fake private'
     };
 
-    Server.init(Manifest, internals.options, (err, server) => {
+    Server.init({ connections: [{ port: 0 }], registrations: [{ plugin: './private' }] }, internals.options, (err, server) => {
 
         expect(err).to.exist();
         expect(err.message).to.equal('register private failed');
@@ -100,7 +97,7 @@ it('Test de error plugin home', { parallel: false }, (done) => {
         name: 'fake home'
     };
 
-    Server.init(Manifest, internals.options, (err, server) => {
+    Server.init({ connections: [{ port: 0 }], registrations: [{ plugin: './home' }] }, internals.options, (err, server) => {
 
         expect(err).to.exist();
         expect(err.message).to.equal('register home failed');

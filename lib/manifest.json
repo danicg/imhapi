@@ -23,6 +23,21 @@
             "options": {
                 "select": ["web"]
             }
+        },
+        {
+            "plugin": "./authentication",
+            "options": {
+                "select": ["web"]
+            }
+        },
+        {
+            "plugin": "vision",
+            "options": {}
+        },
+        {
+            "plugin": "hapi-auth-basic",
+            "options": {}
         }
+
     ]
 }
